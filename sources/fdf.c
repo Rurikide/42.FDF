@@ -76,7 +76,7 @@ void get_nb_row(char *av, t_fdf *fdf)
 
 	fdf->row = 0;
 	fd = open(av, O_RDONLY);
-	while ((line = get_next_line(fd)) > 0)
+	while ((line = get_next_line(fd)) != NULL)
 	{
 		fdf->row++;
 		free(line);
@@ -87,21 +87,11 @@ void get_nb_row(char *av, t_fdf *fdf)
 void	set_dot_position(char **elements, t_fdf *fdf)
 {
 	static int i;
+	int pos;
 
-	// while (*elements && **elements != '\n')
-	while (*elements)
+	pos = 0;
+	while (*elements && **elements != '\n')
 	{
-		if (i < fdf->column && *elements == NULL)
-		{
-			fdf->dot[i].missing = 1;
-			// fdf->dot[i].dcol = i % fdf->column; 
-			// fdf->dot[i].drow = i / fdf->column; 	
-			// fdf->dot[i].x = fdf->x_offset + (fdf->dot[i].dcol * fdf->line_len);
-			// fdf->dot[i].y = fdf->y_offset + (fdf->dot[i].drow * fdf->line_len);
-			// fdf->dot[i].z = 0;
-			i++;
-			return ;
-		}
 		fdf->dot[i].dcol = i % fdf->column; 
 		fdf->dot[i].drow = i / fdf->column; 	
 		fdf->dot[i].x = fdf->x_offset + (fdf->dot[i].dcol * fdf->line_len);
@@ -109,8 +99,19 @@ void	set_dot_position(char **elements, t_fdf *fdf)
 		fdf->dot[i].z = ft_atoi(*elements);
 		fdf->dot[i].missing = 0;
 		i++;
+		pos++;
 		elements++;
 	}
+	if (pos < (fdf->column))
+		{
+			fdf->dot[i].missing = 1;
+			fdf->dot[i].dcol = i % fdf->column; 
+			fdf->dot[i].drow = i / fdf->column; 	
+			fdf->dot[i].x = fdf->x_offset + (fdf->dot[i].dcol * fdf->line_len);
+			fdf->dot[i].y = fdf->y_offset + (fdf->dot[i].drow * fdf->line_len);
+			fdf->dot[i].z = 0;
+			i++;
+		}
 }
 
 void	parse_map(char *av, t_fdf *fdf)
@@ -125,7 +126,7 @@ void	parse_map(char *av, t_fdf *fdf)
 	fdf->nb_dots = (fdf->column * fdf->row);
 	fdf->dot = (t_dot *)ft_calloc(fdf->nb_dots, sizeof(t_dot));
 	fd = open(av, O_RDONLY);
-	while ((line = get_next_line(fd)) > 0)
+	while ((line = get_next_line(fd)) != NULL)
 	{
 		elements = ft_split(line, ' ');
 		set_dot_position(elements, fdf);
@@ -243,11 +244,15 @@ int	main(int ac, char **av)
 				my_mlx_pixel_put(fdf, x_temp, fdf->dot[i].y, color);
 			x_temp += fdf->dot->x_increment;
 		}
-		while (fdf->dot[i + fdf->column].missing == 0 && y_temp <= fdf->dot[i + fdf->column].y)
+		// if (i + fdf->column > fdf->nb_dots)
+		// 	break;
+		while ((i + fdf->column < fdf->nb_dots) && (fdf->dot[i].missing == 0 && fdf->dot[i + fdf->column].missing == 0) && y_temp <= fdf->dot[i + fdf->column].y)
 		{
 			if (x_temp < fdf->width && fdf->dot[i].y < fdf->height)
 				my_mlx_pixel_put(fdf, fdf->dot[i].x, y_temp, color);
 			y_temp += fdf->dot->y_increment;
+			ft_printf("i + col = %d\n", (i + fdf->column));
+			ft_printf("nb of dots = %d\n", fdf->nb_dots);
 		}
 		i++;
 	}
