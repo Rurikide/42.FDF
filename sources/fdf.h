@@ -57,5 +57,6 @@ typedef struct s_fdf
 	int		nb_cols;
 	int		x_offset;
 	int		y_offset;
+	char	*title;
 	t_dot	*dot;
 }   t_fdf;

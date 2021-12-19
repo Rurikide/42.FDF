@@ -43,26 +43,22 @@ void get_nb_col(char *av, t_fdf *fdf)
 	int		i;
 	int		fd;
 	char	*line;
-	int		switch_is_nombre;
+	int		switch_is_nb;
 	
 	i = 0;
 	fd = open(av, O_RDONLY);
 	line = get_next_line(fd);
-// split
-// colum = sozeof split table
-// free split;
 	fdf->column = 0;
-//	fdf->column = ft_wordcount(line, 32);
-	switch_is_nombre = 0;
+	switch_is_nb = 0;
 	while (line[i])
 	{
-		if (switch_is_nombre == 0 && line[i] != 32 && ft_isprint(line[i]))
+		if (switch_is_nb == 0 && line[i] != 32 && ft_isprint(line[i]))
 		{
-			switch_is_nombre = 1;
+			switch_is_nb = 1;
 			fdf->column++;
 		}
-		else if (switch_is_nombre == 1 && line[i] == 32)
-			switch_is_nombre = 0;
+		else if (switch_is_nb == 1 && line[i] == 32)
+			switch_is_nb = 0;
 		i++;
 	}
 	free(line);
@@ -94,9 +90,17 @@ void	set_dot_position(char **elements, t_fdf *fdf)
 	{
 		fdf->dot[i].dcol = i % fdf->column; 
 		fdf->dot[i].drow = i / fdf->column; 	
+		// if (fdf->width < (fdf->x_offset + (fdf->dot[i].dcol * fdf->line_len)) || fdf->height < (fdf->x_offset + (fdf->dot[i].drow * fdf->line_len)))
+		// 	return;
 		fdf->dot[i].x = fdf->x_offset + (fdf->dot[i].dcol * fdf->line_len);
 		fdf->dot[i].y = fdf->y_offset + (fdf->dot[i].drow * fdf->line_len);
 		fdf->dot[i].z = ft_atoi(*elements);
+
+		if (fdf->dot[i].z == 0)
+			fdf->dot[i].colour = 0x00FFFFFF;
+		else
+			fdf->dot[i].colour = 0x00FF0000;
+		// ft_hexa
 		fdf->dot[i].missing = 0;
 		i++;
 		pos++;
@@ -136,15 +140,16 @@ void	parse_map(char *av, t_fdf *fdf)
 	close(fd);
 } 
 
-void	init_fdf(t_fdf *fdf)
+void	init_fdf(char *title, t_fdf *fdf)
 {
 	fdf->mlx = mlx_init();
-	fdf->width = 1200;
-	fdf->height = 780;
-	fdf->x_offset = 10;
-	fdf->y_offset = 10;
+	fdf->width = 1280;
+	fdf->height = 720;
+	fdf->x_offset = 50;
+	fdf->y_offset = 50;
 	fdf->scale = 1;
 	fdf->line_len = 10;
+	fdf->title = title;
 	fdf->win = mlx_new_window(fdf->mlx, fdf->width, fdf->height, "Fils de fer");
 }
 
@@ -177,7 +182,6 @@ int	ft_is_valid_file(char *av)
 int	main(int ac, char **av)
 {
 	int i = 0;
-	int color = 0x00FFFFFF;
 
 	t_fdf	*fdf;
 	
@@ -198,7 +202,7 @@ int	main(int ac, char **av)
 	}
 	
 	fdf = (t_fdf *)ft_calloc(1, sizeof(t_fdf));
-	init_fdf(fdf);
+	init_fdf(av[1], fdf);
 	parse_map(av[1], fdf);
 
 	fdf->img = mlx_new_image(fdf->mlx, fdf->width, fdf->height);
@@ -216,32 +220,27 @@ int	main(int ac, char **av)
 	fdf->dot->x_increment = fdf->dot->dx / (float) fdf->dot->steps;
 	fdf->dot->y_increment = fdf->dot->dy / (float) fdf->dot->steps;
 
-	//int j = 0;
+	// int j = 0;
 	// while (j < fdf->nb_dots)
 	// {
 	// 	ft_printf("(%d;", fdf->dot[j].x);
 	// 	ft_printf("%d)", fdf->dot[j].y);
-	// 	ft_printf(" Z value =.%d\n", fdf->dot[j].z);
+	// 	ft_printf(" Z value = INT is %d\n", fdf->dot[j].z);
 	// 	j++;
 	// }
 	// ft_printf("number of columns : %d\n", fdf->column);
 	// ft_printf("number of rows : %d\n", fdf->row);
 	
-	// DRAWING			
+	// DRAWING	
 	while (i < fdf->nb_dots)
 	{
-		if (fdf->dot[i].z == 0)
-			color = 0x00FFFFFF;
-		else
-			color = 0x00FF0000;
-
 		int x_temp = fdf->dot[i].x;
 		int y_temp = fdf->dot[i].y;
 		
 		while (fdf->dot[i + 1].missing == 0 && x_temp <= fdf->dot[i + 1].x)
 		{
 			if (x_temp < fdf->width && fdf->dot[i].y < fdf->height)
-				my_mlx_pixel_put(fdf, x_temp, fdf->dot[i].y, color);
+				my_mlx_pixel_put(fdf, x_temp, fdf->dot[i].y, fdf->dot[i].colour);
 			x_temp += fdf->dot->x_increment;
 		}
 		// if (i + fdf->column > fdf->nb_dots)
@@ -249,15 +248,15 @@ int	main(int ac, char **av)
 		while ((i + fdf->column < fdf->nb_dots) && (fdf->dot[i].missing == 0 && fdf->dot[i + fdf->column].missing == 0) && y_temp <= fdf->dot[i + fdf->column].y)
 		{
 			if (x_temp < fdf->width && fdf->dot[i].y < fdf->height)
-				my_mlx_pixel_put(fdf, fdf->dot[i].x, y_temp, color);
+				my_mlx_pixel_put(fdf, fdf->dot[i].x, y_temp, fdf->dot[i].colour);
 			y_temp += fdf->dot->y_increment;
-			ft_printf("i + col = %d\n", (i + fdf->column));
-			ft_printf("nb of dots = %d\n", fdf->nb_dots);
+			// ft_printf("i + col = %d\n", (i + fdf->column));
+			// ft_printf("nb of dots = %d\n", fdf->nb_dots);
 		}
 		i++;
 	}
 	mlx_put_image_to_window(fdf->mlx, fdf->win, fdf->img, 0, 0);
-
+	mlx_string_put(fdf->mlx, fdf->win, 0, 0, 0xFFFFFF, fdf->title);
 	mlx_key_hook(fdf->win, key_hook, fdf);
 
 	mlx_loop(fdf->mlx);
