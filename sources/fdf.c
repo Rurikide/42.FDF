@@ -90,18 +90,17 @@ void	set_dot_position(char **elements, t_fdf *fdf)
 	{
 		fdf->dot[i].dcol = i % fdf->column; 
 		fdf->dot[i].drow = i / fdf->column; 	
-		// if (fdf->width < (fdf->x_offset + (fdf->dot[i].dcol * fdf->line_len)) || fdf->height < (fdf->x_offset + (fdf->dot[i].drow * fdf->line_len)))
-		// 	return;
 		fdf->dot[i].x = fdf->x_offset + (fdf->dot[i].dcol * fdf->line_len);
 		fdf->dot[i].y = fdf->y_offset + (fdf->dot[i].drow * fdf->line_len);
 		fdf->dot[i].z = ft_atoi(*elements);
 
 		if (fdf->dot[i].z == 0)
-			fdf->dot[i].colour = 0x00FFFFFF;
+			fdf->dot[i].color = 0x00FFFFFF;
 		else
-			fdf->dot[i].colour = 0x00FF0000;
-		// ft_hexa
+			fdf->dot[i].color = 0x00FF0000;
+		
 		fdf->dot[i].missing = 0;
+
 		i++;
 		pos++;
 		elements++;
@@ -145,8 +144,8 @@ void	init_fdf(char *title, t_fdf *fdf)
 	fdf->mlx = mlx_init();
 	fdf->width = 1280;
 	fdf->height = 720;
-	fdf->x_offset = 50;
-	fdf->y_offset = 50;
+	fdf->x_offset = 1;
+	fdf->y_offset = 25;
 	fdf->scale = 1;
 	fdf->line_len = 10;
 	fdf->title = title;
@@ -177,38 +176,8 @@ int	ft_is_valid_file(char *av)
 	return (1);
 }
 
-
-
-int	main(int ac, char **av)
+void dda_line_algorithm(t_fdf *fdf)
 {
-	int i = 0;
-
-	t_fdf	*fdf;
-	
-	if (ac < 2)
-	{
-		printf("\033[1;31m Please select a test map .fdf\033[0;39m\n");
-		return (0);
-	}
-	else if ((ac > 2))
-	{
-		printf("Please select \033[1;31monly 1\033[0;39m test map .fdf\n");
-		return (0);
-	}
-	else if (ft_is_valid_file(av[1]) == 0)
-	{
-		printf("Please select a \033[1;31m.fdf file\033[0;39m\n");
-		return (0);
-	}
-	
-	fdf = (t_fdf *)ft_calloc(1, sizeof(t_fdf));
-	init_fdf(av[1], fdf);
-	parse_map(av[1], fdf);
-
-	fdf->img = mlx_new_image(fdf->mlx, fdf->width, fdf->height);
-	
-	fdf->addr = mlx_get_data_addr(fdf->img, &fdf->bits_per_pixel, &fdf->line_length, &fdf->endian);
-
 	fdf->dot->dx = fdf->dot[1].x - fdf->dot[0].x;
 	fdf->dot->dy = fdf->dot[fdf->column].y - fdf->dot[0].y;
 
@@ -219,44 +188,76 @@ int	main(int ac, char **av)
 	
 	fdf->dot->x_increment = fdf->dot->dx / (float) fdf->dot->steps;
 	fdf->dot->y_increment = fdf->dot->dy / (float) fdf->dot->steps;
+}
 
-	// int j = 0;
-	// while (j < fdf->nb_dots)
-	// {
-	// 	ft_printf("(%d;", fdf->dot[j].x);
-	// 	ft_printf("%d)", fdf->dot[j].y);
-	// 	ft_printf(" Z value = INT is %d\n", fdf->dot[j].z);
-	// 	j++;
-	// }
-	// ft_printf("number of columns : %d\n", fdf->column);
-	// ft_printf("number of rows : %d\n", fdf->row);
-	
-	// DRAWING	
+void	connect_dots(t_fdf *fdf)
+{
+	int i = 0;
+
+	dda_line_algorithm(fdf);
 	while (i < fdf->nb_dots)
 	{
 		int x_temp = fdf->dot[i].x;
 		int y_temp = fdf->dot[i].y;
-		
+		// ligne de gauche à droite
 		while (fdf->dot[i + 1].missing == 0 && x_temp <= fdf->dot[i + 1].x)
 		{
 			if (x_temp < fdf->width && fdf->dot[i].y < fdf->height)
-				my_mlx_pixel_put(fdf, x_temp, fdf->dot[i].y, fdf->dot[i].colour);
+				my_mlx_pixel_put(fdf, x_temp, fdf->dot[i].y, fdf->dot[i].color);
 			x_temp += fdf->dot->x_increment;
 		}
-		// if (i + fdf->column > fdf->nb_dots)
-		// 	break;
+		// ligne de haut en bas
 		while ((i + fdf->column < fdf->nb_dots) && (fdf->dot[i].missing == 0 && fdf->dot[i + fdf->column].missing == 0) && y_temp <= fdf->dot[i + fdf->column].y)
 		{
 			if (x_temp < fdf->width && fdf->dot[i].y < fdf->height)
-				my_mlx_pixel_put(fdf, fdf->dot[i].x, y_temp, fdf->dot[i].colour);
+				my_mlx_pixel_put(fdf, fdf->dot[i].x, y_temp, fdf->dot[i].color);
 			y_temp += fdf->dot->y_increment;
 			// ft_printf("i + col = %d\n", (i + fdf->column));
 			// ft_printf("nb of dots = %d\n", fdf->nb_dots);
 		}
 		i++;
 	}
+}
+
+int	check_command_line(int ac, char **av)
+{
+	if (ac < 2)
+	{
+		ft_printf("\033[1;31m Please select a test map .fdf\033[0;39m\n");
+		exit (0);
+	}
+	else if ((ac > 2))
+	{
+		ft_printf("Please select \033[1;31monly 1\033[0;39m test map .fdf\n");
+		exit (0);
+	}
+	else if (ft_is_valid_file(av[1]) == 0)
+	{
+		ft_printf("Please select a \033[1;31m.fdf file\033[0;39m\n");
+		exit (0);
+	}
+	return (0);
+}
+
+int	main(int ac, char **av)
+{
+	t_fdf	*fdf;
+
+	check_command_line(ac, av);
+
+	fdf = (t_fdf *)ft_calloc(1, sizeof(t_fdf));
+	init_fdf(av[1], fdf);
+	parse_map(av[1], fdf);
+
+	fdf->img = mlx_new_image(fdf->mlx, fdf->width, fdf->height);
+	fdf->addr = mlx_get_data_addr(fdf->img, &fdf->bits_per_pixel, &fdf->line_length, &fdf->endian);
+
+	connect_dots(fdf);
+
 	mlx_put_image_to_window(fdf->mlx, fdf->win, fdf->img, 0, 0);
+
 	mlx_string_put(fdf->mlx, fdf->win, 0, 0, 0xFFFFFF, fdf->title);
+
 	mlx_key_hook(fdf->win, key_hook, fdf);
 
 	mlx_loop(fdf->mlx);

@@ -35,7 +35,7 @@ typedef struct s_dot
 	int		missing;
 	float	x_increment;
 	float	y_increment;
-	double	colour;
+	double	color;
 }   t_dot;
 
 typedef struct s_fdf
