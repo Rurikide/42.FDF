@@ -29,15 +29,6 @@
 //         iso(&p.x, &p.y, p.z);
 // }
 
-int key_hook(int keycode, t_fdf *fdf)
-{
-	(void)fdf;
-	printf("The keycode is %d\n", keycode);
-	if (keycode == 53 || keycode == 12 )
-		exit(0);
-	return (0);
-}
-
 void get_nb_col(char *av, t_fdf *fdf)
 {
 	int		i;
@@ -218,6 +209,26 @@ void	connect_dots(t_fdf *fdf)
 		i++;
 	}
 }
+int translation(int keycode, t_fdf *fdf)
+{
+	(void)fdf;
+	if (keycode == KEY_RIGHT)
+		fdf->x_offset += 50;
+	connect_dots(fdf);
+	return (0);
+}
+
+int key_event(int keycode, t_fdf *fdf)
+{
+	if (keycode == KEY_ESC || keycode == KEY_Q)
+		exit(0);
+	else if (keycode == KEY_RIGHT)
+	{
+		translation(keycode, fdf);
+		ft_printf("pressing the key: %d\n", keycode);
+	}
+	return (0);
+}
 
 int	check_command_line(int ac, char **av)
 {
@@ -238,6 +249,11 @@ int	check_command_line(int ac, char **av)
 	}
 	return (0);
 }
+void hook_collection(t_fdf *fdf)
+{
+	// mlx_key_hook(fdf->win, key_hook, fdf);
+	mlx_hook(fdf->win, 2, 1L << 0, key_event, fdf);
+}
 
 int	main(int ac, char **av)
 {
@@ -250,17 +266,11 @@ int	main(int ac, char **av)
 	parse_map(av[1], fdf);
 
 	fdf->img = mlx_new_image(fdf->mlx, fdf->width, fdf->height);
-	fdf->addr = mlx_get_data_addr(fdf->img, &fdf->bits_per_pixel, &fdf->line_length, &fdf->endian);
-
+	fdf->addr = mlx_get_data_addr(fdf->img, &fdf->bits_per_pixel, &fdf->line_length, &fdf->endian);	
 	connect_dots(fdf);
-
+	hook_collection(fdf);
 	mlx_put_image_to_window(fdf->mlx, fdf->win, fdf->img, 0, 0);
-
 	mlx_string_put(fdf->mlx, fdf->win, 0, 0, 0xFFFFFF, fdf->title);
-
-	mlx_key_hook(fdf->win, key_hook, fdf);
-
 	mlx_loop(fdf->mlx);
-
 	return (0);
 }

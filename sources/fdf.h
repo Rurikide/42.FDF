@@ -10,6 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef FDF_H
+# define FDF_H
+
 #include <fcntl.h>
 #include <limits.h>
 #include <math.h>
@@ -21,6 +24,20 @@
 #include "../libft/libsources/ft_printf.h"
 #include "../libft/libsources/get_next_line.h"
 #include "../minilibx_macos/mlx.h"
+
+# define KEY_ESC 53
+# define KEY_Q 12
+# define KEY_UP 126
+# define KEY_DOWN 125
+# define KEY_LEFT 123
+# define KEY_RIGHT 124
+# define KEY_ZOOM_OUT 27
+# define KEY_ZOOM_IN 24
+# define KEY_ALTITUDE_DEC 43
+# define KEY_ALTITUDE_INC 47
+# define BIRDS_EYE_VIEW 11
+# define ISOMETRIC_PROJ 34
+# define TRANSVERSAL_CUT 17
 
 typedef struct s_dot
 {
@@ -60,3 +77,5 @@ typedef struct s_fdf
 	char	*title;
 	t_dot	*dot;
 }   t_fdf;
+
+#endif
