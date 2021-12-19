@@ -39,6 +39,9 @@
 # define ISOMETRIC_PROJ 34
 # define TRANSVERSAL_CUT 17
 
+# define BLACK 0x00000000
+# define WHITE 0x00FFFFFF
+
 typedef struct s_dot
 {
 	int		x;

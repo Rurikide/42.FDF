@@ -135,8 +135,8 @@ void	init_fdf(char *title, t_fdf *fdf)
 	fdf->mlx = mlx_init();
 	fdf->width = 1280;
 	fdf->height = 720;
-	fdf->x_offset = 1;
-	fdf->y_offset = 25;
+	fdf->x_offset = 0;
+	fdf->y_offset = 0;
 	fdf->scale = 1;
 	fdf->line_len = 10;
 	fdf->title = title;
@@ -146,8 +146,26 @@ void	init_fdf(char *title, t_fdf *fdf)
 void	my_mlx_pixel_put(t_fdf *fdf, int x, int y, int color)
 {
 	char	*dst;
-	dst = fdf->addr + (y * fdf->line_length + x * (fdf->bits_per_pixel / 8));
-	*(unsigned int*)dst = color;
+	if (x < fdf->width && y < fdf->height)
+	{
+		dst = fdf->addr + (y * fdf->line_length + x * (fdf->bits_per_pixel / 8));
+		*(unsigned int*)dst = color;
+	}
+}
+
+void	my_mlx_pixel_clear(t_fdf *fdf)
+{
+	char	*dst;
+	int i;
+
+	i = 0;
+
+	while (i < (fdf->width * fdf->height))
+	{
+		dst = fdf->addr + (i * (fdf->bits_per_pixel / 8));
+		*(unsigned int*)dst = BLACK;
+		i++;
+	}
 }
 
 int	ft_is_valid_file(char *av)
@@ -193,14 +211,14 @@ void	connect_dots(t_fdf *fdf)
 		// ligne de gauche à droite
 		while (fdf->dot[i + 1].missing == 0 && x_temp <= fdf->dot[i + 1].x)
 		{
-			if (x_temp < fdf->width && fdf->dot[i].y < fdf->height)
+			if (x_temp >= 0 && x_temp < fdf->width && fdf->dot[i].y <= fdf->height)
 				my_mlx_pixel_put(fdf, x_temp, fdf->dot[i].y, fdf->dot[i].color);
 			x_temp += fdf->dot->x_increment;
 		}
 		// ligne de haut en bas
 		while ((i + fdf->column < fdf->nb_dots) && (fdf->dot[i].missing == 0 && fdf->dot[i + fdf->column].missing == 0) && y_temp <= fdf->dot[i + fdf->column].y)
 		{
-			if (x_temp < fdf->width && fdf->dot[i].y < fdf->height)
+			if (fdf->dot[i].x >= 0 && fdf->dot[i].x <= fdf->width && y_temp >= 0 && fdf->dot[i].y <= fdf->height)
 				my_mlx_pixel_put(fdf, fdf->dot[i].x, y_temp, fdf->dot[i].color);
 			y_temp += fdf->dot->y_increment;
 			// ft_printf("i + col = %d\n", (i + fdf->column));
@@ -209,11 +227,35 @@ void	connect_dots(t_fdf *fdf)
 		i++;
 	}
 }
+
+// int zoom(int keycode, t_fdf *fdf)
+// {
+// 	if (keycode == ZOOM_IN)
+// 		fdf->scale *= 1.2;
+// 	if (keycode == ZOOM_OUR)
+// 		fdf->scale /= 1.2;
+// }
+
 int translation(int keycode, t_fdf *fdf)
 {
+	int i;
+
+	i = 0;
 	(void)fdf;
+	if (keycode == KEY_UP)
+		fdf->y_offset -= 10;
+	if (keycode == KEY_DOWN)
+		fdf->y_offset += 10;
+	if (keycode == KEY_LEFT)
+		fdf->x_offset -= 10;
 	if (keycode == KEY_RIGHT)
-		fdf->x_offset += 50;
+		fdf->x_offset += 10;
+	while (i < fdf->nb_dots)
+	{
+		fdf->dot[i].x = fdf->x_offset + (fdf->dot[i].dcol * fdf->line_len);
+		fdf->dot[i].y = fdf->y_offset + (fdf->dot[i].drow * fdf->line_len);
+		i++;
+	}
 	connect_dots(fdf);
 	return (0);
 }
@@ -222,11 +264,20 @@ int key_event(int keycode, t_fdf *fdf)
 {
 	if (keycode == KEY_ESC || keycode == KEY_Q)
 		exit(0);
-	else if (keycode == KEY_RIGHT)
+	else if (keycode == KEY_UP || keycode == KEY_DOWN || keycode == KEY_LEFT || keycode == KEY_RIGHT)
 	{
+		my_mlx_pixel_clear(fdf);
 		translation(keycode, fdf);
+		mlx_put_image_to_window(fdf->mlx, fdf->win, fdf->img, 0, 0);
 		ft_printf("pressing the key: %d\n", keycode);
 	}
+	// else if (keycode == ZOOM_IN || keycode == ZOOM_OUT)
+	// {
+	// 	my_mlx_pixel_clear(fdf);
+	// 	zoom(keycode, fdf);
+	// 	mlx_put_image_to_window(fdf->mlx, fdf->win, fdf->img, 0, 0);
+	// 	ft_printf("pressing the key: %d\n", keycode);
+	// }
 	return (0);
 }
 
@@ -270,7 +321,7 @@ int	main(int ac, char **av)
 	connect_dots(fdf);
 	hook_collection(fdf);
 	mlx_put_image_to_window(fdf->mlx, fdf->win, fdf->img, 0, 0);
-	mlx_string_put(fdf->mlx, fdf->win, 0, 0, 0xFFFFFF, fdf->title);
+	// mlx_string_put(fdf->mlx, fdf->win, 0, 0, 0xFFFFFF, fdf->title);
 	mlx_loop(fdf->mlx);
 	return (0);
 }
