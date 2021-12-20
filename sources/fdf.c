@@ -43,12 +43,12 @@ void get_nb_col(char *av, t_fdf *fdf)
 	switch_is_nb = 0;
 	while (line[i])
 	{
-		if (switch_is_nb == 0 && line[i] != 32 && ft_isprint(line[i]))
+		if (switch_is_nb == 0 && line[i] != ' ' && ft_isprint(line[i]))
 		{
 			switch_is_nb = 1;
 			fdf->column++;
 		}
-		else if (switch_is_nb == 1 && line[i] == 32)
+		else if (switch_is_nb == 1 && line[i] == ' ')
 			switch_is_nb = 0;
 		i++;
 	}
@@ -69,6 +69,15 @@ void get_nb_row(char *av, t_fdf *fdf)
 		free(line);
 	}
 	close(fd);
+}
+void	set_missing_dot_pos(int i, t_fdf *fdf)
+{
+	fdf->dot[i].missing = 1;
+	fdf->dot[i].dcol = i % fdf->column; 
+	fdf->dot[i].drow = i / fdf->column; 	
+	fdf->dot[i].x = fdf->x_offset + (fdf->dot[i].dcol * fdf->line_len);
+	fdf->dot[i].y = fdf->y_offset + (fdf->dot[i].drow * fdf->line_len);
+	fdf->dot[i].z = 0;
 }
 
 void	set_dot_position(char **elements, t_fdf *fdf)
@@ -98,12 +107,7 @@ void	set_dot_position(char **elements, t_fdf *fdf)
 	}
 	if (pos < (fdf->column))
 		{
-			fdf->dot[i].missing = 1;
-			fdf->dot[i].dcol = i % fdf->column; 
-			fdf->dot[i].drow = i / fdf->column; 	
-			fdf->dot[i].x = fdf->x_offset + (fdf->dot[i].dcol * fdf->line_len);
-			fdf->dot[i].y = fdf->y_offset + (fdf->dot[i].drow * fdf->line_len);
-			fdf->dot[i].z = 0;
+			set_missing_dot_pos(i, fdf);
 			i++;
 		}
 }
@@ -140,13 +144,15 @@ void	init_fdf(char *title, t_fdf *fdf)
 	fdf->scale = 1;
 	fdf->line_len = 10;
 	fdf->title = title;
+	fdf->img = mlx_new_image(fdf->mlx, fdf->width, fdf->height);
+	fdf->addr = mlx_get_data_addr(fdf->img, &fdf->bits_per_pixel, &fdf->line_length, &fdf->endian);	
 	fdf->win = mlx_new_window(fdf->mlx, fdf->width, fdf->height, "Fils de fer");
 }
 
 void	my_mlx_pixel_put(t_fdf *fdf, int x, int y, int color)
 {
 	char	*dst;
-	if (x < fdf->width && y < fdf->height)
+	if (x >= 0 && x < fdf->width && y >= 0 && y < fdf->height)
 	{
 		dst = fdf->addr + (y * fdf->line_length + x * (fdf->bits_per_pixel / 8));
 		*(unsigned int*)dst = color;
@@ -185,8 +191,10 @@ int	ft_is_valid_file(char *av)
 	return (1);
 }
 
-void dda_line_algorithm(t_fdf *fdf)
+void	connect_dots(t_fdf *fdf)
 {
+	int i = 0;
+
 	fdf->dot->dx = fdf->dot[1].x - fdf->dot[0].x;
 	fdf->dot->dy = fdf->dot[fdf->column].y - fdf->dot[0].y;
 
@@ -197,26 +205,19 @@ void dda_line_algorithm(t_fdf *fdf)
 	
 	fdf->dot->x_increment = fdf->dot->dx / (float) fdf->dot->steps;
 	fdf->dot->y_increment = fdf->dot->dy / (float) fdf->dot->steps;
-}
-
-void	connect_dots(t_fdf *fdf)
-{
-	int i = 0;
-
-	dda_line_algorithm(fdf);
 	while (i < fdf->nb_dots)
 	{
 		int x_temp = fdf->dot[i].x;
 		int y_temp = fdf->dot[i].y;
-		// ligne de gauche à droite
-		while (fdf->dot[i + 1].missing == 0 && x_temp <= fdf->dot[i + 1].x)
+		// dessine de gauche à droite
+		while (x_temp < fdf->dot[i + 1].x && fdf->dot[i + 1].missing == 0)
 		{
-			if (x_temp >= 0 && x_temp < fdf->width && fdf->dot[i].y <= fdf->height)
+			if (x_temp >= 0 && x_temp <= fdf->width && fdf->dot[i].y <= fdf->height)
 				my_mlx_pixel_put(fdf, x_temp, fdf->dot[i].y, fdf->dot[i].color);
 			x_temp += fdf->dot->x_increment;
 		}
-		// ligne de haut en bas
-		while ((i + fdf->column < fdf->nb_dots) && (fdf->dot[i].missing == 0 && fdf->dot[i + fdf->column].missing == 0) && y_temp <= fdf->dot[i + fdf->column].y)
+		// dessine de haut en bas
+		while ((i + fdf->column < fdf->nb_dots) && y_temp < fdf->dot[i + fdf->column].y && (fdf->dot[i].missing == 0 && fdf->dot[i + fdf->column].missing == 0))
 		{
 			if (fdf->dot[i].x >= 0 && fdf->dot[i].x <= fdf->width && y_temp >= 0 && fdf->dot[i].y <= fdf->height)
 				my_mlx_pixel_put(fdf, fdf->dot[i].x, y_temp, fdf->dot[i].color);
@@ -226,13 +227,14 @@ void	connect_dots(t_fdf *fdf)
 		}
 		i++;
 	}
+	mlx_put_image_to_window(fdf->mlx, fdf->win, fdf->img, 0, 0);
 }
 
 // int zoom(int keycode, t_fdf *fdf)
 // {
 // 	if (keycode == ZOOM_IN)
 // 		fdf->scale *= 1.2;
-// 	if (keycode == ZOOM_OUR)
+// 	if (keycode == ZOOM_OUT)
 // 		fdf->scale /= 1.2;
 // }
 
@@ -268,8 +270,6 @@ int key_event(int keycode, t_fdf *fdf)
 	{
 		my_mlx_pixel_clear(fdf);
 		translation(keycode, fdf);
-		mlx_put_image_to_window(fdf->mlx, fdf->win, fdf->img, 0, 0);
-		ft_printf("pressing the key: %d\n", keycode);
 	}
 	// else if (keycode == ZOOM_IN || keycode == ZOOM_OUT)
 	// {
@@ -311,17 +311,11 @@ int	main(int ac, char **av)
 	t_fdf	*fdf;
 
 	check_command_line(ac, av);
-
 	fdf = (t_fdf *)ft_calloc(1, sizeof(t_fdf));
 	init_fdf(av[1], fdf);
 	parse_map(av[1], fdf);
-
-	fdf->img = mlx_new_image(fdf->mlx, fdf->width, fdf->height);
-	fdf->addr = mlx_get_data_addr(fdf->img, &fdf->bits_per_pixel, &fdf->line_length, &fdf->endian);	
 	connect_dots(fdf);
 	hook_collection(fdf);
-	mlx_put_image_to_window(fdf->mlx, fdf->win, fdf->img, 0, 0);
-	// mlx_string_put(fdf->mlx, fdf->win, 0, 0, 0xFFFFFF, fdf->title);
 	mlx_loop(fdf->mlx);
 	return (0);
 }
