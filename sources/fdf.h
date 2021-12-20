@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 08:35:30 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/02 11:04:18 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/20 10:55:15 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,4 +81,6 @@ typedef struct s_fdf
 	t_dot	*dot;
 }   t_fdf;
 
+void get_nb_col(char *av, t_fdf *fdf);
+void get_nb_row(char *av, t_fdf *fdf);
 #endif

@@ -6,22 +6,22 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 08:41:14 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/03 15:55:00 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/20 14:11:53 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-// static void iso(int *x, int *y, int z)
-// {
-//     int previous_x;
-//     int previous_y;
+static void iso(int *x, int *y, int z)
+{
+    int previous_x;
+    int previous_y;
 
-//     previous_x = *x;
-//     previous_y = *y;
-//     *x = (previous_x - previous_y) * cos(0.523599);
-//     *y = -z + (previous_x + previous_y) * sin(0.523599);
-// }
+    previous_x = *x;
+    previous_y = *y;
+    *x = (previous_x - previous_y) * cos(0.523599);
+    *y = -z + (previous_x + previous_y) * sin(0.523599);
+}
 
 // t_dot project(t_dot p, t_fdf *fdf)
 // {
@@ -29,47 +29,6 @@
 //         iso(&p.x, &p.y, p.z);
 // }
 
-void get_nb_col(char *av, t_fdf *fdf)
-{
-	int		i;
-	int		fd;
-	char	*line;
-	int		switch_is_nb;
-	
-	i = 0;
-	fd = open(av, O_RDONLY);
-	line = get_next_line(fd);
-	fdf->column = 0;
-	switch_is_nb = 0;
-	while (line[i])
-	{
-		if (switch_is_nb == 0 && line[i] != ' ' && ft_isprint(line[i]))
-		{
-			switch_is_nb = 1;
-			fdf->column++;
-		}
-		else if (switch_is_nb == 1 && line[i] == ' ')
-			switch_is_nb = 0;
-		i++;
-	}
-	free(line);
-	close(fd);
-}
-
-void get_nb_row(char *av, t_fdf *fdf)
-{
-	int		fd;
-	char	*line;
-
-	fdf->row = 0;
-	fd = open(av, O_RDONLY);
-	while ((line = get_next_line(fd)) != NULL)
-	{
-		fdf->row++;
-		free(line);
-	}
-	close(fd);
-}
 void	set_missing_dot_pos(int i, t_fdf *fdf)
 {
 	fdf->dot[i].missing = 1;
@@ -205,10 +164,20 @@ void	connect_dots(t_fdf *fdf)
 	
 	fdf->dot->x_increment = fdf->dot->dx / (float) fdf->dot->steps;
 	fdf->dot->y_increment = fdf->dot->dy / (float) fdf->dot->steps;
+
+	// TRYING ISO, doesnt work
+	int z = 0;
+	while (z < fdf->nb_dots)
+	{
+		iso(&fdf->dot[z].x, &fdf->dot[z].y, fdf->dot[z].z);
+		z++;
+	}
+
 	while (i < fdf->nb_dots)
 	{
 		int x_temp = fdf->dot[i].x;
 		int y_temp = fdf->dot[i].y;
+
 		// dessine de gauche à droite
 		while (x_temp < fdf->dot[i + 1].x && fdf->dot[i + 1].missing == 0)
 		{
@@ -238,7 +207,7 @@ void	connect_dots(t_fdf *fdf)
 // 		fdf->scale /= 1.2;
 // }
 
-int translation(int keycode, t_fdf *fdf)
+int key_arrow_move(int keycode, t_fdf *fdf)
 {
 	int i;
 
@@ -269,7 +238,7 @@ int key_event(int keycode, t_fdf *fdf)
 	else if (keycode == KEY_UP || keycode == KEY_DOWN || keycode == KEY_LEFT || keycode == KEY_RIGHT)
 	{
 		my_mlx_pixel_clear(fdf);
-		translation(keycode, fdf);
+		key_arrow_move(keycode, fdf);
 	}
 	// else if (keycode == ZOOM_IN || keycode == ZOOM_OUT)
 	// {
