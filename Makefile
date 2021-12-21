@@ -22,7 +22,9 @@ MFLAGS= -Lminilibx_macos -lmlx -framework OpenGL -framework Appkit
 SDIR= sources
 ODIR= objects
 
-SRCS= fdf.c
+SRCS=	fdf.c \
+		parse_map.c \
+
 OBJS= $(SRCS:.c=.o)
 
 SFIX= $(addprefix $(SDIR)/, $(SRCS))
