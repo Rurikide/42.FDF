@@ -12,16 +12,16 @@
 
 #include "fdf.h"
 
-static void iso(int *x, int *y, int z)
-{
-    int previous_x;
-    int previous_y;
+// static void iso(int *x, int *y, int z)
+// {
+//     int previous_x;
+//     int previous_y;
 
-    previous_x = *x;
-    previous_y = *y;
-    *x = (previous_x - previous_y) * cos(0.523599);
-    *y = -z + (previous_x + previous_y) * sin(0.523599);
-}
+//     previous_x = *x;
+//     previous_y = *y;
+//     *x = (previous_x - previous_y) * cos(0.523599);
+//     *y = -z + (previous_x + previous_y) * sin(0.523599);
+// }
 
 // t_dot project(t_dot p, t_fdf *fdf)
 // {
@@ -34,8 +34,10 @@ void	set_missing_dot_pos(int i, t_fdf *fdf)
 	fdf->dot[i].missing = 1;
 	fdf->dot[i].dcol = i % fdf->column; 
 	fdf->dot[i].drow = i / fdf->column; 	
-	fdf->dot[i].x = fdf->x_offset + (fdf->dot[i].dcol * fdf->line_len);
-	fdf->dot[i].y = fdf->y_offset + (fdf->dot[i].drow * fdf->line_len);
+	// fdf->dot[i].x = fdf->x_offset + (fdf->dot[i].dcol * fdf->line_len);
+	// fdf->dot[i].y = fdf->y_offset + (fdf->dot[i].drow * fdf->line_len);
+	fdf->dot[i].x = (fdf->dot[i].dcol * fdf->line_len);
+	fdf->dot[i].y = (fdf->dot[i].drow * fdf->line_len);
 	fdf->dot[i].z = 0;
 }
 
@@ -45,18 +47,24 @@ void	set_dot_position(char **elements, t_fdf *fdf)
 	int pos;
 
 	pos = 0;
+	if (fdf->nb_dots > 900)
+	{
+		fdf->line_len = 10;
+	}
 	while (*elements && **elements != '\n')
 	{
 		fdf->dot[i].dcol = i % fdf->column; 
 		fdf->dot[i].drow = i / fdf->column; 	
-		fdf->dot[i].x = fdf->x_offset + (fdf->dot[i].dcol * fdf->line_len);
-		fdf->dot[i].y = fdf->y_offset + (fdf->dot[i].drow * fdf->line_len);
+		// fdf->dot[i].x = fdf->x_offset + (fdf->dot[i].dcol * fdf->line_len);
+		// fdf->dot[i].y = fdf->y_offset + (fdf->dot[i].drow * fdf->line_len);
+		fdf->dot[i].x = (fdf->dot[i].dcol * fdf->line_len);
+		fdf->dot[i].y = (fdf->dot[i].drow * fdf->line_len);
 		fdf->dot[i].z = ft_atoi(*elements);
 
 		if (fdf->dot[i].z == 0)
-			fdf->dot[i].color = 0x00FFFFFF;
+			fdf->dot[i].color = 0x00000000;
 		else
-			fdf->dot[i].color = 0x00FF0000;
+			fdf->dot[i].color = 0x00FFFFFF;
 		
 		fdf->dot[i].missing = 0;
 
@@ -101,7 +109,7 @@ void	init_fdf(char *title, t_fdf *fdf)
 	fdf->x_offset = 0;
 	fdf->y_offset = 0;
 	fdf->scale = 1;
-	fdf->line_len = 10;
+	fdf->line_len = 30;
 	fdf->title = title;
 	fdf->img = mlx_new_image(fdf->mlx, fdf->width, fdf->height);
 	fdf->addr = mlx_get_data_addr(fdf->img, &fdf->bits_per_pixel, &fdf->line_length, &fdf->endian);	
@@ -127,8 +135,13 @@ void	my_mlx_pixel_clear(t_fdf *fdf)
 
 	while (i < (fdf->width * fdf->height))
 	{
+		int color =0xFFFFFF;
+		if (i % 2 == 0)
+			color = 0x6F8FAF;
+		else
+			color = 0x9FE2BF;
 		dst = fdf->addr + (i * (fdf->bits_per_pixel / 8));
-		*(unsigned int*)dst = BLACK;
+		*(unsigned int*)dst = color + 1;
 		i++;
 	}
 }
@@ -166,13 +179,13 @@ void	connect_dots(t_fdf *fdf)
 	fdf->dot->y_increment = fdf->dot->dy / (float) fdf->dot->steps;
 
 	// TRYING ISO, doesnt work
-	int z = 0;
-	while (z < fdf->nb_dots)
-	{
-		iso(&fdf->dot[z].x, &fdf->dot[z].y, fdf->dot[z].z);
-		z++;
-	}
-
+	// int z = 0;
+	// while (z < fdf->nb_dots)
+	// {
+	// 	iso(&fdf->dot[z].x, &fdf->dot[z].y, fdf->dot[z].z);
+	// 	z++;
+	// }
+	my_mlx_pixel_clear(fdf);
 	while (i < fdf->nb_dots)
 	{
 		int x_temp = fdf->dot[i].x;
@@ -186,7 +199,7 @@ void	connect_dots(t_fdf *fdf)
 			x_temp += fdf->dot->x_increment;
 		}
 		// dessine de haut en bas
-		while ((i + fdf->column < fdf->nb_dots) && y_temp < fdf->dot[i + fdf->column].y && (fdf->dot[i].missing == 0 && fdf->dot[i + fdf->column].missing == 0))
+		while ((i + fdf->column < fdf->nb_dots) && y_temp <= fdf->dot[i + fdf->column].y && (fdf->dot[i].missing == 0 && fdf->dot[i + fdf->column].missing == 0))
 		{
 			if (fdf->dot[i].x >= 0 && fdf->dot[i].x <= fdf->width && y_temp >= 0 && fdf->dot[i].y <= fdf->height)
 				my_mlx_pixel_put(fdf, fdf->dot[i].x, y_temp, fdf->dot[i].color);
