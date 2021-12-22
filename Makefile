@@ -6,7 +6,7 @@
 #    By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/09/23 15:02:10 by tshimoda          #+#    #+#              #
-#    Updated: 2021/11/30 15:09:44 by tshimoda         ###   ########.fr        #
+#    Updated: 2021/12/21 21:40:36 by tshimoda         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,10 @@ SDIR= sources
 ODIR= objects
 
 SRCS=	fdf.c \
+		init.c \
+		key_hook.c \
 		parse_map.c \
+
 
 OBJS= $(SRCS:.c=.o)
 

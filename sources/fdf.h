@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 08:35:30 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/20 10:55:15 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/21 21:36:10 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,22 @@ typedef struct s_fdf
 	t_dot	*dot;
 }   t_fdf;
 
-void get_nb_col(char *av, t_fdf *fdf);
-void get_nb_row(char *av, t_fdf *fdf);
+
+void	init_fdf(char *title, t_fdf *fdf);
+void	my_mlx_pixel_put(t_fdf *fdf, int x, int y, int color);
+void	my_mlx_bg_color(t_fdf *fdf);
+int		check_command_line(int ac, char **av);
+int		ft_is_valid_file(char *av);
+void	connect_dots(t_fdf *fdf);
+
+void	get_nb_col(char *av, t_fdf *fdf);
+void	get_nb_row(char *av, t_fdf *fdf);
+void	parse_map(char *av, t_fdf *fdf);
+
+int key_arrow_move(int keycode, t_fdf *fdf);
+int key_event(int keycode, t_fdf *fdf);
+void hook_collection(t_fdf *fdf);
+
+void	set_missing_dot_pos(int i, t_fdf *fdf);
+void	set_dot_position(char **elements, t_fdf *fdf);
 #endif
