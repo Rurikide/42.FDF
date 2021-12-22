@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/21 21:30:49 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/22 15:59:52 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/22 16:09:39 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,14 @@ int key_arrow_move(int keycode, t_fdf *fdf)
 
 int key_event(int keycode, t_fdf *fdf)
 {
-	// (void)fdf;
+	(void)fdf;
 	if (keycode == KEY_ESC || keycode == KEY_Q)
 		exit(0);
-	else if (keycode == KEY_UP || keycode == KEY_DOWN || keycode == KEY_LEFT || keycode == KEY_RIGHT)
-	{
-		my_mlx_bg_color(fdf);
-		key_arrow_move(keycode, fdf);
-	}
+	// else if (keycode == KEY_UP || keycode == KEY_DOWN || keycode == KEY_LEFT || keycode == KEY_RIGHT)
+	// {
+	// 	my_mlx_bg_color(fdf);
+	// 	key_arrow_move(keycode, fdf);
+	// }
 	// else if (keycode == ZOOM_IN || keycode == ZOOM_OUT)
 	// {
 	// 	my_mlx_pixel_clear(fdf);
