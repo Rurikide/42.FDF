@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/21 22:25:23 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/21 22:25:27 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/22 09:57:24 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ void	back_up_dots(t_fdf *fdf)
 {
 	int i;
 	i = 0;
+	fdf->dot_bu = (t_dot *)ft_calloc(fdf->nb_dots, sizeof(t_dot));
 	while (i < fdf->nb_dots)
 	{
 		fdf->dot_bu[i] = fdf->dot[i];

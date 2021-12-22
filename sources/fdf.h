@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 08:35:30 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/21 22:26:54 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/22 10:50:31 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ typedef struct s_dot
 	int		dcol;
 	int		drow;
 	int		missing;
+	int		x_dir;
+	int		y_dir;
 	float	x_inc;
 	float	y_inc;
 	double	color;
@@ -103,4 +105,5 @@ void	set_dot_position(char **elements, t_fdf *fdf);
 
 void	back_up_dots(t_fdf *fdf);
 
+void    get_dda_slope(t_fdf *fdf, t_dot *a, t_dot *b);
 #endif

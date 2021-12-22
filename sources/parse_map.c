@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/20 10:48:54 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/21 22:23:51 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/22 09:57:35 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ void	parse_map(char *av, t_fdf *fdf)
 
 	fdf->nb_dots = (fdf->column * fdf->row);
 	fdf->dot = (t_dot *)ft_calloc(fdf->nb_dots, sizeof(t_dot));
+	// fdf->dot_bu = (t_dot *)ft_calloc(fdf->nb_dots, sizeof(t_dot));
 	fd = open(av, O_RDONLY);
 	while ((line = get_next_line(fd)) != NULL)
 	{

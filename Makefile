@@ -6,7 +6,7 @@
 #    By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/09/23 15:02:10 by tshimoda          #+#    #+#              #
-#    Updated: 2021/12/21 22:25:59 by tshimoda         ###   ########.fr        #
+#    Updated: 2021/12/22 10:33:50 by tshimoda         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,6 +23,7 @@ SDIR= sources
 ODIR= objects
 
 SRCS=	main.c \
+		dda.c \
 		dots.c \
 		init.c \
 		key_hook.c \

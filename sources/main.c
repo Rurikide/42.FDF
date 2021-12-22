@@ -6,11 +6,28 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 08:41:14 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/21 22:27:24 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/22 15:57:39 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
+
+void iso(t_fdf *fdf)
+{
+    int x0;
+    int y0;
+	int i = 0;
+	while (i < fdf->nb_dots)
+    {
+		x0 = fdf->dot[i].x;
+		y0 = fdf->dot[i].y;
+		fdf->dot[i].x = (x0 - y0) * cos(0.523599);
+		fdf->dot[i].y = -fdf->dot[i].z + (x0 + y0) * sin(0.523599);
+
+		// printf("dot #%d ::: iso coord (x;y) = (%d;%d)\n", i, fdf->dot[i].x, fdf->dot[i].y);
+		i++;
+	}
+}
 
 // static void iso(int *x, int *y, int z)
 // {
@@ -28,16 +45,6 @@
 //     if (fdf->camera->projection == ISO)
 //         iso(&p.x, &p.y, p.z);
 // }
-
-void	my_mlx_pixel_put(t_fdf *fdf, int x, int y, int color)
-{
-	char	*dst;
-	if (x >= 0 && x < fdf->width && y >= 0 && y < fdf->height)
-	{
-		dst = fdf->addr + (y * fdf->line_length + x * (fdf->bits_per_pixel / 8));
-		*(unsigned int*)dst = color;
-	}
-}
 
 void	my_mlx_bg_color(t_fdf *fdf)
 {
@@ -59,14 +66,86 @@ void	my_mlx_bg_color(t_fdf *fdf)
 	}
 }
 
+void	my_mlx_pixel_put(t_fdf *fdf, int x, int y, int color)
+{
+	char	*dst;
+	
+	// condition if to only put a dot within limits FDF Window
+	if (x >= 0 && x < fdf->width && y >= 0 && y < fdf->height)
+	{
+		dst = fdf->addr + (y * fdf->line_length + x * (fdf->bits_per_pixel / 8));
+		*(unsigned int*)dst = color;
+	}
+}
+
 void	connect_dots(t_fdf *fdf)
 {
-	int i = 0;
+	int i;
+	// int x;
+	// int y;
 
-	fdf->dot->dx = fdf->dot[1].x - fdf->dot[0].x;
-	fdf->dot->dy = fdf->dot[fdf->column].y - fdf->dot[0].y;
+	i = 0;
+	
+	my_mlx_bg_color(fdf);
 
-	if (ft_absolute(fdf->dot->dx) > ft_absolute(fdf->dot->dy))
+	// iso(fdf);
+	
+// 	while (i < fdf->nb_dots)
+// 	{
+// 		x = fdf->dot[i].x;
+// 		y = fdf->dot[i].y;
+		
+// 		// coordonnées des points : 
+// 		// printf("dot #%d ::: iso coord (x;y) = (%d;%d)\n", i, fdf->dot[i].x, fdf->dot[i].y);
+		
+// 		// LOOP pour relier les dots "sur la même : row dot[i].x"
+// 		while (x < fdf->dot[i + 1].x && fdf->dot[i + 1].missing == 0)
+// 		{
+// 			get_dda_slope(fdf, &fdf->dot[i], &fdf->dot[i + 1]);
+// 			while (fdf->dot->steps-- > 0)
+// 			{
+// 				if (x >= 0 && x <= fdf->width && fdf->dot[i].y <= fdf->height)
+// 				{
+// 					my_mlx_pixel_put(fdf, x, y, fdf->dot[i].color);
+// 					x += round(fdf->dot->x_dir * fdf->dot->x_inc);
+// 					y += round(fdf->dot->y_dir * fdf->dot->y_inc);
+// 				}
+// 				// printf("x value = %d & y value = %d\n", x, y);
+// 			}
+// 		}
+
+// 		x = fdf->dot[i].x;
+// 		y = fdf->dot[i].y;
+		
+// 		// LOOP pour relier les dots "sur la même : colonne dot[i].y"
+// 		while ((i + fdf->column < fdf->nb_dots) && y <= fdf->dot[i + fdf->column].y && (fdf->dot[i].missing == 0 && fdf->dot[i + fdf->column].missing == 0))
+// 		{
+// 			get_dda_slope(fdf, &fdf->dot[i], &fdf->dot[i + fdf->column]);
+// 			while (fdf->dot->steps-- > 0)
+// 			{
+// 				if (fdf->dot[i].x >= 0 && fdf->dot[i].x <= fdf->width && y >= 0 && fdf->dot[i].y <= fdf->height)
+// 				{
+// 					my_mlx_pixel_put(fdf, x, y, fdf->dot[i].color);
+// 					x += round(fdf->dot->x_dir * fdf->dot->x_inc);
+// 					y += round(fdf->dot->y_dir * fdf->dot->y_inc);
+// 				}
+// 				// printf("x value = %d & y value = %d\n", x, y);
+// 			}
+// 		}
+// 		i++;
+// 	}
+// 	mlx_put_image_to_window(fdf->mlx, fdf->win, fdf->img, 0, 0);
+// }
+
+
+
+	// OLD VERSION BELOW
+	// iso(fdf);
+	// get_dda_slope(fdf, &fdf->dot[i], &fdf->dot[i + 1]);
+	fdf->dot->dx = ft_absolute(fdf->dot[1].x - fdf->dot[0].x);
+	fdf->dot->dy = ft_absolute(fdf->dot[fdf->column].y - fdf->dot[0].y);
+
+	if (fdf->dot->dx > fdf->dot->dy)
 		fdf->dot->steps = fdf->dot->dx;
 	else
 		fdf->dot->steps = fdf->dot->dy;
@@ -81,7 +160,7 @@ void	connect_dots(t_fdf *fdf)
 	// 	iso(&fdf->dot[z].x, &fdf->dot[z].y, fdf->dot[z].z);
 	// 	z++;
 	// }
-	my_mlx_bg_color(fdf);
+	
 	while (i < fdf->nb_dots)
 	{
 		int x_temp = fdf->dot[i].x;
@@ -92,14 +171,14 @@ void	connect_dots(t_fdf *fdf)
 		{
 			if (x_temp >= 0 && x_temp <= fdf->width && fdf->dot[i].y <= fdf->height)
 				my_mlx_pixel_put(fdf, x_temp, fdf->dot[i].y, fdf->dot[i].color);
-			x_temp += fdf->dot->x_inc;
+			x_temp += round(fdf->dot->x_inc);
 		}
 		// dessine de haut en bas
 		while ((i + fdf->column < fdf->nb_dots) && y_temp <= fdf->dot[i + fdf->column].y && (fdf->dot[i].missing == 0 && fdf->dot[i + fdf->column].missing == 0))
 		{
 			if (fdf->dot[i].x >= 0 && fdf->dot[i].x <= fdf->width && y_temp >= 0 && fdf->dot[i].y <= fdf->height)
 				my_mlx_pixel_put(fdf, fdf->dot[i].x, y_temp, fdf->dot[i].color);
-			y_temp += fdf->dot->y_inc;
+			y_temp += round(fdf->dot->y_inc);
 			// ft_printf("i + col = %d\n", (i + fdf->column));
 			// ft_printf("nb of dots = %d\n", fdf->nb_dots);
 		}
