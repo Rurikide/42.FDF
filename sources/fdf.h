@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 08:35:30 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/21 21:36:10 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/21 22:26:54 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,8 @@ typedef struct s_dot
 	int		dcol;
 	int		drow;
 	int		missing;
-	float	x_increment;
-	float	y_increment;
+	float	x_inc;
+	float	y_inc;
 	double	color;
 }   t_dot;
 
@@ -79,6 +79,7 @@ typedef struct s_fdf
 	int		y_offset;
 	char	*title;
 	t_dot	*dot;
+	t_dot	*dot_bu;
 }   t_fdf;
 
 
@@ -99,4 +100,7 @@ void hook_collection(t_fdf *fdf);
 
 void	set_missing_dot_pos(int i, t_fdf *fdf);
 void	set_dot_position(char **elements, t_fdf *fdf);
+
+void	back_up_dots(t_fdf *fdf);
+
 #endif

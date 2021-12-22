@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fdf.c                                              :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 08:41:14 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/21 21:40:08 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/21 22:27:24 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,8 @@ void	connect_dots(t_fdf *fdf)
 	else
 		fdf->dot->steps = fdf->dot->dy;
 	
-	fdf->dot->x_increment = fdf->dot->dx / (float) fdf->dot->steps;
-	fdf->dot->y_increment = fdf->dot->dy / (float) fdf->dot->steps;
+	fdf->dot->x_inc = fdf->dot->dx / (float) fdf->dot->steps;
+	fdf->dot->y_inc = fdf->dot->dy / (float) fdf->dot->steps;
 
 	// TRYING ISO, doesnt work
 	// int z = 0;
@@ -92,14 +92,14 @@ void	connect_dots(t_fdf *fdf)
 		{
 			if (x_temp >= 0 && x_temp <= fdf->width && fdf->dot[i].y <= fdf->height)
 				my_mlx_pixel_put(fdf, x_temp, fdf->dot[i].y, fdf->dot[i].color);
-			x_temp += fdf->dot->x_increment;
+			x_temp += fdf->dot->x_inc;
 		}
 		// dessine de haut en bas
 		while ((i + fdf->column < fdf->nb_dots) && y_temp <= fdf->dot[i + fdf->column].y && (fdf->dot[i].missing == 0 && fdf->dot[i + fdf->column].missing == 0))
 		{
 			if (fdf->dot[i].x >= 0 && fdf->dot[i].x <= fdf->width && y_temp >= 0 && fdf->dot[i].y <= fdf->height)
 				my_mlx_pixel_put(fdf, fdf->dot[i].x, y_temp, fdf->dot[i].color);
-			y_temp += fdf->dot->y_increment;
+			y_temp += fdf->dot->y_inc;
 			// ft_printf("i + col = %d\n", (i + fdf->column));
 			// ft_printf("nb of dots = %d\n", fdf->nb_dots);
 		}
