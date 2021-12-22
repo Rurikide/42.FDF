@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 08:41:14 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/22 16:56:50 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/22 17:02:27 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,8 +114,8 @@ void	connect_dots(t_fdf *fdf)
 			}
 		}
 
-		// x = fdf->dot[i].x;
-		// y = fdf->dot[i].y;
+		x = fdf->dot[i].x;
+		y = fdf->dot[i].y;
 		
 		// // LOOP pour relier les dots "sur la même : colonne dot[i].y"
 		while ((i + fdf->column < fdf->nb_dots) && y <= fdf->dot[i + fdf->column].y && (fdf->dot[i].missing == 0 && fdf->dot[i + fdf->column].missing == 0))
