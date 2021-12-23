@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 08:41:14 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/23 15:12:10 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/23 15:26:11 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void	connect_dots(t_fdf *fdf)
 			get_dda_slope(fdf, &fdf->dot[i], &fdf->dot[i + 1]);
 			while (fdf->dot->steps-- > 0)
 			{
-					my_mlx_pixel_put(fdf, round(x), round(y), fdf->dot[i].color / fdf->dot[i].z);
+					my_mlx_pixel_put(fdf, round(x), round(y), fdf->dot[i].color);
 					x += (fdf->dot->x_dir * fdf->dot->x_inc);
 					y += (fdf->dot->y_dir * fdf->dot->y_inc);
 			}
@@ -103,7 +103,7 @@ void	connect_dots(t_fdf *fdf)
 			get_dda_slope(fdf, &fdf->dot[i], &fdf->dot[i + fdf->column]);
 			while (fdf->dot->steps-- > 0)
 			{
-					my_mlx_pixel_put(fdf, round(x), round(y), fdf->dot[i].color / fdf->dot[i].z);
+					my_mlx_pixel_put(fdf, round(x), round(y), fdf->dot[i].color);
 					x += (fdf->dot->x_dir * fdf->dot->x_inc);
 					y += (fdf->dot->y_dir * fdf->dot->y_inc);
 			}
