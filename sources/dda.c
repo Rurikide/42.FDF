@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/22 10:26:07 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/22 20:48:37 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/22 21:24:34 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,6 @@ void    get_dda_slope(t_fdf *fdf, t_dot *a, t_dot *b)
 	else
 		fdf->dot->steps = fdf->dot->dy;
 	
-	fdf->dot->x_inc = fdf->dot->dx / (float) fdf->dot->steps;
-	fdf->dot->y_inc = fdf->dot->dy / (float) fdf->dot->steps;
+	fdf->dot->x_inc = fdf->dot->dx / fdf->dot->steps;
+	fdf->dot->y_inc = fdf->dot->dy / fdf->dot->steps;
 }

@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 08:35:30 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/22 20:49:07 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/22 21:25:02 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,8 @@ typedef struct s_dot
 	int		missing;
 	int		x_dir;
 	int		y_dir;
-	float	x_inc;
-	float	y_inc;
+	double	x_inc;
+	double	y_inc;
 	double	color;
 }   t_dot;
 

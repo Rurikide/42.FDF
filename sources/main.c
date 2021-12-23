@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 08:41:14 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/22 20:57:58 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/22 21:52:15 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,17 +93,17 @@ void	connect_dots(t_fdf *fdf)
 					x += (fdf->dot->x_dir * fdf->dot->x_inc);
 					y += (fdf->dot->y_dir * fdf->dot->y_inc);
 				// }
-				// printf("x value = %d & y value = %d\n", x, y);
+				// printf("dot #%d, x value = %f & y value = %f\n", i, x, y);
 			}
 		}
 
 		// x = fdf->dot[i].x;
 		// y = fdf->dot[i].y;
 		
-		// // // // LOOP pour relier les dots "sur la même : colonne dot[i].y"
+		// // // LOOP pour relier les dots "sur la même : colonne dot[i].y"
 		// while ((i + fdf->column < fdf->nb_dots) && y < fdf->dot[i + fdf->column].y && (fdf->dot[i].missing == 0 && fdf->dot[i + fdf->column].missing == 0))
 		// {
-		// 	get_dda_slope(fdf, &fdf->dot[i + fdf->column], &fdf->dot[i + fdf->column]);
+		// 	get_dda_slope(fdf, &fdf->dot[i], &fdf->dot[i + fdf->column]);
 		// 	while (fdf->dot->steps-- > 0)
 		// 	{
 		// 		// if (fdf->dot[i].x >= 0 && fdf->dot[i].x <= fdf->width && y >= 0 && fdf->dot[i].y <= fdf->height)
@@ -112,7 +112,7 @@ void	connect_dots(t_fdf *fdf)
 		// 			x += (fdf->dot->x_dir * fdf->dot->x_inc);
 		// 			y += (fdf->dot->y_dir * fdf->dot->y_inc);
 		// 		// }
-		// 		// printf("x value = %d & y value = %d\n", x, y);
+		// 		// printf("dot #%d, x value = %f & y value = %f\n", i, x, y);
 		// 	}
 		// }
 		i++;
