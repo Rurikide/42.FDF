@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 08:41:14 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/22 21:52:15 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/22 23:04:27 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ void iso(t_fdf *fdf)
     {
 		x0 = fdf->dot[i].x;
 		y0 = fdf->dot[i].y;
-		fdf->dot[i].x = fdf->x_offset + (x0 - y0) * cos(0.523599);
-		fdf->dot[i].y = fdf->y_offset + fdf->dot[i].z + (x0 + y0) * sin(0.523599);
+		fdf->dot[i].x = fdf->x_offset + (x0 - y0) * cos(0.723599);
+		fdf->dot[i].y = fdf->y_offset + fdf->dot[i].z + (x0 + y0) * sin(0.623599);
 
 		// printf("dot #%d ::: iso coord (x;y) = (%d;%d)\n", i, fdf->dot[i].x, fdf->dot[i].y);
 		i++;
@@ -71,104 +71,42 @@ void	connect_dots(t_fdf *fdf)
 	
 	my_mlx_bg_color(fdf);
 
+	// COMMENT OUT iso(fdf) to have parallel lines
 	iso(fdf);
-	
+
+	// "HORIZONTAL" LINES WHILE LOOP when not in ISO projection
 	while (i < fdf->nb_dots)
 	{
 		x = fdf->dot[i].x;
 		y = fdf->dot[i].y;
-		
-		// coordonnées des points : 
-		// printf("dot #%d ::: iso coord (x;y) = (%d;%d)\n", i, fdf->dot[i].x, fdf->dot[i].y);
-		
-		// LOOP pour relier les dots "sur la même : row dot[i].x"
 		while (x < fdf->dot[i + 1].x && fdf->dot[i + 1].missing == 0)
 		{
 			get_dda_slope(fdf, &fdf->dot[i], &fdf->dot[i + 1]);
 			while (fdf->dot->steps-- > 0)
 			{
-				// if (x >= 0 && x <= fdf->width && fdf->dot[i].y <= fdf->height)
-				// {
 					my_mlx_pixel_put(fdf, round(x), round(y), fdf->dot[i].color);
 					x += (fdf->dot->x_dir * fdf->dot->x_inc);
 					y += (fdf->dot->y_dir * fdf->dot->y_inc);
-				// }
-				// printf("dot #%d, x value = %f & y value = %f\n", i, x, y);
 			}
 		}
 
-		// x = fdf->dot[i].x;
-		// y = fdf->dot[i].y;
-		
-		// // // LOOP pour relier les dots "sur la même : colonne dot[i].y"
-		// while ((i + fdf->column < fdf->nb_dots) && y < fdf->dot[i + fdf->column].y && (fdf->dot[i].missing == 0 && fdf->dot[i + fdf->column].missing == 0))
-		// {
-		// 	get_dda_slope(fdf, &fdf->dot[i], &fdf->dot[i + fdf->column]);
-		// 	while (fdf->dot->steps-- > 0)
-		// 	{
-		// 		// if (fdf->dot[i].x >= 0 && fdf->dot[i].x <= fdf->width && y >= 0 && fdf->dot[i].y <= fdf->height)
-		// 		// {
-		// 			my_mlx_pixel_put(fdf, round(x), round(y), fdf->dot[i].color);
-		// 			x += (fdf->dot->x_dir * fdf->dot->x_inc);
-		// 			y += (fdf->dot->y_dir * fdf->dot->y_inc);
-		// 		// }
-		// 		// printf("dot #%d, x value = %f & y value = %f\n", i, x, y);
-		// 	}
-		// }
+		// "VERTICAL" LINES  WHILE LOOP when not in ISO projection
+		x = fdf->dot[i].x;
+		y = fdf->dot[i].y;
+		while ((i + fdf->column < fdf->nb_dots) && y < fdf->dot[i + fdf->column].y && (fdf->dot[i].missing == 0 && fdf->dot[i + fdf->column].missing == 0))
+		{
+			get_dda_slope(fdf, &fdf->dot[i], &fdf->dot[i + fdf->column]);
+			while (fdf->dot->steps-- > 0)
+			{
+					my_mlx_pixel_put(fdf, round(x), round(y), fdf->dot[i].color);
+					x += (fdf->dot->x_dir * fdf->dot->x_inc);
+					y += (fdf->dot->y_dir * fdf->dot->y_inc);
+			}
+		}
 		i++;
 	}
 	mlx_put_image_to_window(fdf->mlx, fdf->win, fdf->img, 0, 0);
 }
-
-
-
-	// OLD VERSION BELOW
-	// iso(fdf);
-	// get_dda_slope(fdf, &fdf->dot[i], &fdf->dot[i + 1]);
-// 	fdf->dot->dx = ft_absolute(fdf->dot[1].x - fdf->dot[0].x);
-// 	fdf->dot->dy = ft_absolute(fdf->dot[fdf->column].y - fdf->dot[0].y);
-
-// 	if (fdf->dot->dx > fdf->dot->dy)
-// 		fdf->dot->steps = fdf->dot->dx;
-// 	else
-// 		fdf->dot->steps = fdf->dot->dy;
-	
-// 	fdf->dot->x_inc = fdf->dot->dx / (float) fdf->dot->steps;
-// 	fdf->dot->y_inc = fdf->dot->dy / (float) fdf->dot->steps;
-
-// 	// TRYING ISO, doesnt work
-// 	// int z = 0;
-// 	// while (z < fdf->nb_dots)
-// 	// {
-// 	// 	iso(&fdf->dot[z].x, &fdf->dot[z].y, fdf->dot[z].z);
-// 	// 	z++;
-// 	// }
-	
-// 	while (i < fdf->nb_dots)
-// 	{
-// 		int x_temp = fdf->dot[i].x;
-// 		int y_temp = fdf->dot[i].y;
-
-// 		// dessine de gauche à droite
-// 		while (x_temp < fdf->dot[i + 1].x && fdf->dot[i + 1].missing == 0)
-// 		{
-// 			if (x_temp >= 0 && x_temp <= fdf->width && fdf->dot[i].y <= fdf->height)
-// 				my_mlx_pixel_put(fdf, x_temp, fdf->dot[i].y, fdf->dot[i].color);
-// 			x_temp += round(fdf->dot->x_inc);
-// 		}
-// 		// dessine de haut en bas
-// 		while ((i + fdf->column < fdf->nb_dots) && y_temp <= fdf->dot[i + fdf->column].y && (fdf->dot[i].missing == 0 && fdf->dot[i + fdf->column].missing == 0))
-// 		{
-// 			if (fdf->dot[i].x >= 0 && fdf->dot[i].x <= fdf->width && y_temp >= 0 && fdf->dot[i].y <= fdf->height)
-// 				my_mlx_pixel_put(fdf, fdf->dot[i].x, y_temp, fdf->dot[i].color);
-// 			y_temp += round(fdf->dot->y_inc);
-// 			// ft_printf("i + col = %d\n", (i + fdf->column));
-// 			// ft_printf("nb of dots = %d\n", fdf->nb_dots);
-// 		}
-// 		i++;
-// 	}
-// 	mlx_put_image_to_window(fdf->mlx, fdf->win, fdf->img, 0, 0);
-// }
 
 // int zoom(int keycode, t_fdf *fdf)
 // {
