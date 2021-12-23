@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 08:41:14 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/23 00:49:04 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/23 08:13:25 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ void	connect_dots(t_fdf *fdf)
 		// "VERTICAL" LINES  WHILE LOOP when not in ISO projection
 		x = fdf->dot[i].x;
 		y = fdf->dot[i].y;
-		if ((i + fdf->column < fdf->nb_dots) && round(y) != fdf->dot[i + fdf->column].y && (fdf->dot[i].missing == 0 && fdf->dot[i + fdf->column].missing == 0))
+		if ((i + fdf->column < fdf->nb_dots) && (fdf->dot[i].missing == 0 && fdf->dot[i + fdf->column].missing == 0))
 		{
 			get_dda_slope(fdf, &fdf->dot[i], &fdf->dot[i + fdf->column]);
 			while (fdf->dot->steps-- > 0)
