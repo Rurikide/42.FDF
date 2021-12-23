@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 08:41:14 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/23 08:13:25 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/23 15:12:10 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,17 @@ void iso(t_fdf *fdf)
     int x0;
     int y0;
 	int i = 0;
+	int z0 = 0;
+
 	while (i < fdf->nb_dots)
     {
 		x0 = fdf->dot[i].x;
 		y0 = fdf->dot[i].y;
+		z0 = fdf->dot[i].z;
+		if (z0 != 0)
+			z0 += fdf->alt * z0;
 		fdf->dot[i].x = fdf->x_offset + (x0 - y0) * cos(0.23599);
-		fdf->dot[i].y = fdf->y_offset + fdf->dot[i].z + (x0 + y0) * sin(0.623599);
+		fdf->dot[i].y = fdf->y_offset - z0 + (x0 + y0) * sin(0.623599);
 
 		// printf("dot #%d ::: iso coord (x;y) = (%d;%d)\n", i, fdf->dot[i].x, fdf->dot[i].y);
 		i++;
@@ -84,7 +89,7 @@ void	connect_dots(t_fdf *fdf)
 			get_dda_slope(fdf, &fdf->dot[i], &fdf->dot[i + 1]);
 			while (fdf->dot->steps-- > 0)
 			{
-					my_mlx_pixel_put(fdf, round(x), round(y), fdf->dot[i].color);
+					my_mlx_pixel_put(fdf, round(x), round(y), fdf->dot[i].color / fdf->dot[i].z);
 					x += (fdf->dot->x_dir * fdf->dot->x_inc);
 					y += (fdf->dot->y_dir * fdf->dot->y_inc);
 			}
@@ -98,7 +103,7 @@ void	connect_dots(t_fdf *fdf)
 			get_dda_slope(fdf, &fdf->dot[i], &fdf->dot[i + fdf->column]);
 			while (fdf->dot->steps-- > 0)
 			{
-					my_mlx_pixel_put(fdf, round(x), round(y), fdf->dot[i].color);
+					my_mlx_pixel_put(fdf, round(x), round(y), fdf->dot[i].color / fdf->dot[i].z);
 					x += (fdf->dot->x_dir * fdf->dot->x_inc);
 					y += (fdf->dot->y_dir * fdf->dot->y_inc);
 			}

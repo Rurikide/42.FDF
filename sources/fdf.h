@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 08:35:30 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/22 21:25:02 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/23 14:07:59 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ typedef struct s_fdf
 	int		x_offset;
 	int		y_offset;
 	char	*title;
+	int		alt;
 	t_dot	*dot;
 	t_dot	*dot_bu;
 }   t_fdf;
@@ -97,6 +98,8 @@ void	get_nb_row(char *av, t_fdf *fdf);
 void	parse_map(char *av, t_fdf *fdf);
 
 int key_arrow_move(int keycode, t_fdf *fdf);
+int key_altitude(int keycode, t_fdf *fdf);
+
 int key_event(int keycode, t_fdf *fdf);
 void hook_collection(t_fdf *fdf);
 
