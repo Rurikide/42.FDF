@@ -21,7 +21,7 @@ void	init_fdf(char *title, t_fdf *fdf)
 	fdf->y_offset = 0;
 	fdf->alt = 0;
 	fdf->scale = 1;
-	fdf->line_len = 30;
+	fdf->line_len = 20;
 	fdf->title = title;
 	fdf->img = mlx_new_image(fdf->mlx, fdf->width, fdf->height);
 	fdf->addr = mlx_get_data_addr(fdf->img, &fdf->bits_per_pixel, &fdf->line_length, &fdf->endian);	

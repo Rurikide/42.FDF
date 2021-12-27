@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/21 22:25:23 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/22 09:57:24 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/26 20:59:13 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,15 +37,76 @@ void	set_missing_dot_pos(int i, t_fdf *fdf)
 	fdf->dot[i].z = 0;
 }
 
+int	hex_to_dec(char *elements)
+{
+	int nb;
+	int len;
+	int base;
+	int decimal;
+
+	len = ft_strlen(elements) - 1;
+	base = 1;
+	decimal = 0;
+
+	while (len >= 0)
+	{
+		if (ft_isdigit(elements[len]))
+			nb = elements[len] - '0';
+		else
+			nb = ft_toupper(elements[len]) - 'A' + 10;
+		decimal += nb * base;
+		base *= 16;
+		len--;
+	}
+	return (decimal);
+}
+
+
+
+int parse_color(char *elements)
+{
+	int i;
+	int color;
+
+	i = 0;
+	
+	while (elements[i])
+	{
+		if (elements[i] == ',')
+		{
+			
+			// printf("elements = %s\n", elements);
+			// printf("i value = %d\n", i);
+
+			if  (elements[i + 1] == '0' && (elements[i + 2] == 'x' || elements[i + 2] == 'X'))
+			{
+				color = hex_to_dec(&elements[i + 3]);
+				// printf("hex color = %d\n", color);
+				return (color);
+			}
+		}
+		i++;
+	}
+	if (ft_atoi(elements) == 0)
+		color = BLACK;
+	else
+		color = WHITE;
+	return (color);
+}
+
 void	set_dot_position(char **elements, t_fdf *fdf)
 {
 	static int i;
 	int pos;
 
 	pos = 0;
-	if (fdf->nb_dots > 900)
+	if (fdf->nb_dots > 10000)
 	{
-		fdf->line_len = 10;
+		fdf->line_len = 1;
+	}
+	else if (fdf->nb_dots > 900)
+	{
+		fdf->line_len = 5;
 	}
 	while (*elements && **elements != '\n')
 	{
@@ -57,11 +118,8 @@ void	set_dot_position(char **elements, t_fdf *fdf)
 		fdf->dot[i].y = (fdf->dot[i].drow * fdf->line_len);
 		fdf->dot[i].z = ft_atoi(*elements);
 
-		if (fdf->dot[i].z == 0)
-			fdf->dot[i].color = 0x00000000;
-		else
-			fdf->dot[i].color = 0x00FFFFFF;
-		
+		// ALGO DE COLOR
+		fdf->dot[i].color = parse_color(*elements);
 		fdf->dot[i].missing = 0;
 
 		i++;

@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 08:41:14 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/23 15:26:11 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/26 21:58:08 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,9 +115,9 @@ void	connect_dots(t_fdf *fdf)
 
 // int zoom(int keycode, t_fdf *fdf)
 // {
-// 	if (keycode == ZOOM_IN)
+// 	if (keycode == 1)
 // 		fdf->scale *= 1.2;
-// 	if (keycode == ZOOM_OUT)
+// 	if (keycode == 2)
 // 		fdf->scale /= 1.2;
 // }
 

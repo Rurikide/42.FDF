@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/21 21:30:49 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/23 14:57:28 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/26 22:07:28 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,16 @@ int key_arrow_move(int keycode, t_fdf *fdf)
 	if (keycode == KEY_LEFT)
 		fdf->x_offset -= 10;
 	if (keycode == KEY_RIGHT)
-		fdf->x_offset += 10;
+		fdf->x_offset += 10;	
+	if (keycode == 43)
+	{
+		if (fdf->line_len - 1 > 0)
+			fdf->line_len -= 1;
+	}
+	if (keycode == 47)
+	{
+		fdf->line_len += 1;
+	}
 	while (i < fdf->nb_dots)
 	{
 		fdf->dot[i].x = fdf->x_offset + (fdf->dot[i].dcol * fdf->line_len);
@@ -50,7 +59,7 @@ int key_event(int keycode, t_fdf *fdf)
 		my_mlx_bg_color(fdf);
 		key_arrow_move(keycode, fdf);
 	}
-	else if (keycode == KEY_ZOOM_IN || keycode == KEY_ZOOM_OUT)
+	else if (keycode == KEY_ZOOM_IN || keycode == KEY_ZOOM_OUT || keycode == 43 || keycode == 47)
 	{
 		key_arrow_move(keycode, fdf);
 	}
