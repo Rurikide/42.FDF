@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 08:35:30 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/26 20:13:52 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/29 15:20:27 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@
 # define KEY_RIGHT 124
 # define KEY_ZOOM_OUT 27
 # define KEY_ZOOM_IN 24
-# define KEY_ALTITUDE_DEC 43
-# define KEY_ALTITUDE_INC 47
+# define KEY_HIGH 47
+# define KEY_LOW 43
 # define BIRDS_EYE_VIEW 11
 # define ISOMETRIC_PROJ 34
 # define TRANSVERSAL_CUT 17
@@ -69,6 +69,7 @@ typedef struct s_fdf
 	int		bits_per_pixel;
 	int		width;
 	int		height;
+	int		iso;
 	float	scale;
 	int		line_len;
 	int		line_length;
@@ -79,6 +80,8 @@ typedef struct s_fdf
 	int		nb_cols;
 	int		x_offset;
 	int		y_offset;
+	int		z_highest;
+	int		z_lowest;
 	char	*title;
 	int		alt;
 	t_dot	*dot;

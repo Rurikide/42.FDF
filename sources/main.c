@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 08:41:14 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/26 21:58:08 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/29 14:58:09 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void iso(t_fdf *fdf)
 		if (z0 != 0)
 			z0 += fdf->alt * z0;
 		fdf->dot[i].x = fdf->x_offset + (x0 - y0) * cos(0.23599);
-		fdf->dot[i].y = fdf->y_offset - z0 + (x0 + y0) * sin(0.623599);
+		fdf->dot[i].y = fdf->y_offset - z0 + (x0 + y0) * sin(8.623599);
 
 		// printf("dot #%d ::: iso coord (x;y) = (%d;%d)\n", i, fdf->dot[i].x, fdf->dot[i].y);
 		i++;
@@ -77,7 +77,8 @@ void	connect_dots(t_fdf *fdf)
 	my_mlx_bg_color(fdf);
 
 	// COMMENT OUT iso(fdf) to have parallel lines
-	iso(fdf);
+	if (fdf->iso == 1)
+		iso(fdf);
 
 	// "HORIZONTAL" LINES WHILE LOOP when not in ISO projection
 	while (i < fdf->nb_dots)

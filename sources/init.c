@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/21 21:38:35 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/23 14:54:22 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/29 15:08:36 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,9 @@ void	init_fdf(char *title, t_fdf *fdf)
 	fdf->x_offset = 0;
 	fdf->y_offset = 0;
 	fdf->alt = 0;
+	fdf->iso = 1;
+	fdf->z_highest = 0;
+	fdf->z_lowest = 0;
 	fdf->scale = 1;
 	fdf->line_len = 20;
 	fdf->title = title;

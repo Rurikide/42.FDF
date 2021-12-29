@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/21 21:30:49 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/26 22:07:28 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/29 15:23:39 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,25 +17,59 @@ int key_arrow_move(int keycode, t_fdf *fdf)
 	int i;
 
 	i = 0;
-	(void)fdf;
-	if (keycode == KEY_ZOOM_IN)
+
+	if (keycode == 34 && fdf->iso != 1)
+	{
+		fdf->iso = 1;
+		fdf->x_offset = 0;
+		fdf->y_offset = 0;
+		fdf->alt = 0;
+	}
+	if (keycode == 35 && fdf->iso != 0)
+	{
+		fdf->iso = 0;
+		fdf->x_offset = 0;
+		fdf->y_offset = 0;
+		fdf->alt = 0;
+	}
+
+	if (keycode == KEY_HIGH)
+	{
 		fdf->alt += 1;
-	if (keycode == KEY_ZOOM_OUT)
+		// printf("fdf-alt value = %d\n", fdf->alt);
+	}
+	if (keycode == KEY_LOW)
 		fdf->alt -= 1;
 	if (keycode == KEY_UP)
+	{
 		fdf->y_offset -= 10;
+		if (fdf->iso == 1)
+			fdf->x_offset -= 5;
+	}
 	if (keycode == KEY_DOWN)
+	{
 		fdf->y_offset += 10;
+		if (fdf->iso == 1)
+			fdf->x_offset += 5;
+	}
 	if (keycode == KEY_LEFT)
+	{
 		fdf->x_offset -= 10;
+		if (fdf->iso == 1)
+			fdf->y_offset += 4;
+	}
 	if (keycode == KEY_RIGHT)
-		fdf->x_offset += 10;	
-	if (keycode == 43)
+	{
+		fdf->x_offset += 10;
+		if (fdf->iso == 1)
+			fdf->y_offset -= 4;
+	}	
+	if (keycode == KEY_ZOOM_OUT)
 	{
 		if (fdf->line_len - 1 > 0)
 			fdf->line_len -= 1;
 	}
-	if (keycode == 47)
+	if (keycode == KEY_ZOOM_IN)
 	{
 		fdf->line_len += 1;
 	}
@@ -51,7 +85,13 @@ int key_arrow_move(int keycode, t_fdf *fdf)
 
 int key_event(int keycode, t_fdf *fdf)
 {
-	// (void)fdf;
+	// (void)
+	printf("KEYCODE = %d\n", keycode);
+
+
+	if (keycode == 35 || keycode == 34)
+		key_arrow_move(keycode, fdf);
+	
 	if (keycode == KEY_ESC || keycode == KEY_Q)
 		exit(0);
 	else if (keycode == KEY_UP || keycode == KEY_DOWN || keycode == KEY_LEFT || keycode == KEY_RIGHT)
@@ -59,7 +99,7 @@ int key_event(int keycode, t_fdf *fdf)
 		my_mlx_bg_color(fdf);
 		key_arrow_move(keycode, fdf);
 	}
-	else if (keycode == KEY_ZOOM_IN || keycode == KEY_ZOOM_OUT || keycode == 43 || keycode == 47)
+	else if (keycode == KEY_HIGH || keycode == KEY_LOW || keycode == KEY_ZOOM_IN || keycode == KEY_ZOOM_OUT)
 	{
 		key_arrow_move(keycode, fdf);
 	}

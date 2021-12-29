@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/21 22:25:23 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/26 20:59:13 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/28 22:19:32 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,18 @@ void	set_dot_position(char **elements, t_fdf *fdf)
 		fdf->dot[i].y = (fdf->dot[i].drow * fdf->line_len);
 		fdf->dot[i].z = ft_atoi(*elements);
 
+		// HIGH AND LOW POINT
+		if (fdf->dot[i].z > fdf->z_highest)
+		{
+			fdf->z_highest = fdf->dot[i].z;
+			// printf("TOP = %d\n", fdf->z_highest);
+		}
+		if (fdf->dot[i].z < fdf->z_lowest)
+		{
+			fdf->z_lowest = fdf->dot[i].z;
+			// printf("BOT = %d\n", fdf->z_lowest);
+		}
+		
 		// ALGO DE COLOR
 		fdf->dot[i].color = parse_color(*elements);
 		fdf->dot[i].missing = 0;
