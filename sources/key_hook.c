@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/21 21:30:49 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/29 22:01:13 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/29 22:49:38 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,10 +113,16 @@ int	key_transform_map(int keycode, t_fdf *fdf)
 
 int	key_event(int keycode, t_fdf *fdf)
 {
+	if (keycode == KEY_ESC || keycode == KEY_Q)
+	{
+		free(fdf->dot);
+		free(fdf);
+		mlx_destroy_image(fdf->mlx, fdf->img);
+		mlx_destroy_window(fdf->mlx, fdf->win);
+		exit(0);
+	}
 	if (keycode == KEY_I || keycode == KEY_P)
 		key_change_projection(keycode, fdf);
-	if (keycode == KEY_ESC || keycode == KEY_Q)
-		exit(0);
 	else if (keycode == KEY_UP || keycode == KEY_DOWN || \
 	keycode == KEY_LEFT || keycode == KEY_RIGHT)
 		key_arrow_move(keycode, fdf);

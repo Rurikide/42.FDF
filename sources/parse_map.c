@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/20 10:48:54 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/29 21:27:33 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/29 22:43:09 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,11 @@ void	get_nb_row(char *av, t_fdf *fdf)
 
 	fdf->row = 0;
 	fd = open(av, O_RDONLY);
-	while ((line = get_next_line(fd)) != NULL)
+	while (1)
 	{
+		line = get_next_line(fd);
+		if (line == NULL)
+			break ;
 		fdf->row++;
 		free(line);
 	}
@@ -65,8 +68,11 @@ void	parse_map(char *av, t_fdf *fdf)
 	fdf->nb_dots = (fdf->column * fdf->row);
 	fdf->dot = (t_dot *)ft_calloc(fdf->nb_dots, sizeof(t_dot));
 	fd = open(av, O_RDONLY);
-	while ((line = get_next_line(fd)) != NULL)
+	while (1)
 	{
+		line = get_next_line(fd);
+		if (line == NULL)
+			break ;
 		elements = ft_split(line, ' ');
 		set_dot_position(elements, fdf);
 		free(elements);
