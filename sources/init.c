@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/21 21:38:35 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/29 15:08:36 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/29 21:18:20 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,16 +27,18 @@ void	init_fdf(char *title, t_fdf *fdf)
 	fdf->line_len = 20;
 	fdf->title = title;
 	fdf->img = mlx_new_image(fdf->mlx, fdf->width, fdf->height);
-	fdf->addr = mlx_get_data_addr(fdf->img, &fdf->bits_per_pixel, &fdf->line_length, &fdf->endian);	
+	fdf->addr = mlx_get_data_addr(fdf->img, &fdf->bpp, &fdf->w_len, &fdf->end);
 	fdf->win = mlx_new_window(fdf->mlx, fdf->width, fdf->height, "Fils de fer");
 }
 
 int	ft_is_valid_file(char *av)
 {
-	int len;
-	int v_len = 3;
-	char *valid = ".fdf";
-	
+	int		len;
+	int		v_len;
+	char	*valid;
+
+	v_len = 3;
+	valid = ".fdf";
 	len = ft_strlen(av) - 1;
 	while (valid[v_len])
 	{

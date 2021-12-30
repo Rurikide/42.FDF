@@ -6,19 +6,19 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/20 10:48:54 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/28 22:11:53 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/29 21:27:33 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void get_nb_col(char *av, t_fdf *fdf)
+void	get_nb_col(char *av, t_fdf *fdf)
 {
 	int		i;
 	int		fd;
 	char	*line;
 	int		switch_is_nb;
-	
+
 	i = 0;
 	fd = open(av, O_RDONLY);
 	line = get_next_line(fd);
@@ -39,7 +39,7 @@ void get_nb_col(char *av, t_fdf *fdf)
 	close(fd);
 }
 
-void get_nb_row(char *av, t_fdf *fdf)
+void	get_nb_row(char *av, t_fdf *fdf)
 {
 	int		fd;
 	char	*line;
@@ -62,17 +62,41 @@ void	parse_map(char *av, t_fdf *fdf)
 
 	get_nb_col(av, fdf);
 	get_nb_row(av, fdf);
-
 	fdf->nb_dots = (fdf->column * fdf->row);
 	fdf->dot = (t_dot *)ft_calloc(fdf->nb_dots, sizeof(t_dot));
-	// fdf->dot_bu = (t_dot *)ft_calloc(fdf->nb_dots, sizeof(t_dot));
 	fd = open(av, O_RDONLY);
 	while ((line = get_next_line(fd)) != NULL)
 	{
 		elements = ft_split(line, ' ');
 		set_dot_position(elements, fdf);
-		// free(elements);
+		free(elements);
 		free(line);
 	}
 	close(fd);
+}
+
+int	parse_color(char *elements)
+{
+	int	i;
+	int	color;
+
+	i = 0;
+	while (elements[i])
+	{
+		if (elements[i] == ',')
+		{
+			if (elements[i + 1] == '0' && \
+			(elements[i + 2] == 'x' || elements[i + 2] == 'X'))
+			{
+				color = hex_to_dec(&elements[i + 3]);
+				return (color);
+			}
+		}
+		i++;
+	}
+	if (ft_atoi(elements) == 0)
+		color = BLACK;
+	else
+		color = WHITE;
+	return (color);
 }

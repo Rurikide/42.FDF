@@ -6,16 +6,16 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/21 22:25:23 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/28 22:19:32 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/29 21:07:34 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "fdf.h"
 
 void	back_up_dots(t_fdf *fdf)
 {
-	int i;
+	int	i;
+
 	i = 0;
 	fdf->dot_bu = (t_dot *)ft_calloc(fdf->nb_dots, sizeof(t_dot));
 	while (i < fdf->nb_dots)
@@ -28,10 +28,8 @@ void	back_up_dots(t_fdf *fdf)
 void	set_missing_dot_pos(int i, t_fdf *fdf)
 {
 	fdf->dot[i].missing = 1;
-	fdf->dot[i].dcol = i % fdf->column; 
-	fdf->dot[i].drow = i / fdf->column; 	
-	// fdf->dot[i].x = fdf->x_offset + (fdf->dot[i].dcol * fdf->line_len);
-	// fdf->dot[i].y = fdf->y_offset + (fdf->dot[i].drow * fdf->line_len);
+	fdf->dot[i].dcol = i % fdf->column;
+	fdf->dot[i].drow = i / fdf->column;
 	fdf->dot[i].x = (fdf->dot[i].dcol * fdf->line_len);
 	fdf->dot[i].y = (fdf->dot[i].drow * fdf->line_len);
 	fdf->dot[i].z = 0;
@@ -39,15 +37,14 @@ void	set_missing_dot_pos(int i, t_fdf *fdf)
 
 int	hex_to_dec(char *elements)
 {
-	int nb;
-	int len;
-	int base;
-	int decimal;
+	int	nb;
+	int	len;
+	int	base;
+	int	decimal;
 
 	len = ft_strlen(elements) - 1;
 	base = 1;
 	decimal = 0;
-
 	while (len >= 0)
 	{
 		if (ft_isdigit(elements[len]))
@@ -61,45 +58,8 @@ int	hex_to_dec(char *elements)
 	return (decimal);
 }
 
-
-
-int parse_color(char *elements)
+void	fdf_line_len(t_fdf *fdf)
 {
-	int i;
-	int color;
-
-	i = 0;
-	
-	while (elements[i])
-	{
-		if (elements[i] == ',')
-		{
-			
-			// printf("elements = %s\n", elements);
-			// printf("i value = %d\n", i);
-
-			if  (elements[i + 1] == '0' && (elements[i + 2] == 'x' || elements[i + 2] == 'X'))
-			{
-				color = hex_to_dec(&elements[i + 3]);
-				// printf("hex color = %d\n", color);
-				return (color);
-			}
-		}
-		i++;
-	}
-	if (ft_atoi(elements) == 0)
-		color = BLACK;
-	else
-		color = WHITE;
-	return (color);
-}
-
-void	set_dot_position(char **elements, t_fdf *fdf)
-{
-	static int i;
-	int pos;
-
-	pos = 0;
 	if (fdf->nb_dots > 10000)
 	{
 		fdf->line_len = 1;
@@ -108,39 +68,32 @@ void	set_dot_position(char **elements, t_fdf *fdf)
 	{
 		fdf->line_len = 5;
 	}
+}
+
+void	set_dot_position(char **elements, t_fdf *fdf)
+{
+	static int	i;
+	int			pos;
+
+	pos = 0;
+	fdf_line_len(fdf);
 	while (*elements && **elements != '\n')
 	{
-		fdf->dot[i].dcol = i % fdf->column; 
-		fdf->dot[i].drow = i / fdf->column; 	
-		// fdf->dot[i].x = fdf->x_offset + (fdf->dot[i].dcol * fdf->line_len);
-		// fdf->dot[i].y = fdf->y_offset + (fdf->dot[i].drow * fdf->line_len);
+		fdf->dot[i].dcol = i % fdf->column;
+		fdf->dot[i].drow = i / fdf->column;
 		fdf->dot[i].x = (fdf->dot[i].dcol * fdf->line_len);
 		fdf->dot[i].y = (fdf->dot[i].drow * fdf->line_len);
 		fdf->dot[i].z = ft_atoi(*elements);
-
-		// HIGH AND LOW POINT
 		if (fdf->dot[i].z > fdf->z_highest)
-		{
 			fdf->z_highest = fdf->dot[i].z;
-			// printf("TOP = %d\n", fdf->z_highest);
-		}
 		if (fdf->dot[i].z < fdf->z_lowest)
-		{
 			fdf->z_lowest = fdf->dot[i].z;
-			// printf("BOT = %d\n", fdf->z_lowest);
-		}
-		
-		// ALGO DE COLOR
 		fdf->dot[i].color = parse_color(*elements);
 		fdf->dot[i].missing = 0;
-
 		i++;
 		pos++;
 		elements++;
 	}
 	if (pos < (fdf->column))
-		{
-			set_missing_dot_pos(i, fdf);
-			i++;
-		}
+		set_missing_dot_pos(i++, fdf);
 }
