@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/20 10:48:54 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/29 22:43:09 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/31 11:10:10 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void	parse_map(char *av, t_fdf *fdf)
 			break ;
 		elements = ft_split(line, ' ');
 		set_dot_position(elements, fdf);
-		free(elements);
+		ft_free_table(elements);
 		free(line);
 	}
 	close(fd);

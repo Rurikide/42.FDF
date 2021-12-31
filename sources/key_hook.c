@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/21 21:30:49 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/29 22:49:38 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/31 11:12:52 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,8 +117,6 @@ int	key_event(int keycode, t_fdf *fdf)
 	{
 		free(fdf->dot);
 		free(fdf);
-		mlx_destroy_image(fdf->mlx, fdf->img);
-		mlx_destroy_window(fdf->mlx, fdf->win);
 		exit(0);
 	}
 	if (keycode == KEY_I || keycode == KEY_P)
