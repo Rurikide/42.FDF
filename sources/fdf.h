@@ -6,7 +6,7 @@
 /*   By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 08:35:30 by tshimoda          #+#    #+#             */
-/*   Updated: 2021/12/29 22:31:13 by tshimoda         ###   ########.fr       */
+/*   Updated: 2021/12/31 17:40:20 by tshimoda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ typedef struct s_fdf
 	int		width;
 	int		height;
 	int		iso;
-	float	scale;
+	double	scale;
 	int		line_len;
 	int		w_len;
 	int		end;
@@ -110,4 +110,5 @@ int		key_change_projection(int keycode, t_fdf *fdf);
 void	key_arrow_value(int keycode, t_fdf *fdf);
 void	iso(t_fdf *fdf);
 void	refresh_map(t_fdf *fdf);
+int		close_fdf(t_fdf *fdf);
 #endif
