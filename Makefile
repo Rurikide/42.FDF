@@ -6,7 +6,7 @@
 #    By: tshimoda <tshimoda@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/09/23 15:02:10 by tshimoda          #+#    #+#              #
-#    Updated: 2021/12/22 10:33:50 by tshimoda         ###   ########.fr        #
+#    Updated: 2022/01/06 12:10:07 by tshimoda         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,12 +22,12 @@ MFLAGS= -Lminilibx_macos -lmlx -framework OpenGL -framework Appkit
 SDIR= sources
 ODIR= objects
 
-SRCS=	main.c \
-		dda.c \
-		dots.c \
-		init.c \
-		key_hook.c \
-		parse_map.c \
+SRCS=	fdf.c \
+		dot.c \
+		key.c \
+		misc.c \
+		parse.c \
+		plot.c \
 
 
 OBJS= $(SRCS:.c=.o)
